@@ -7,7 +7,8 @@ def calculate_inputs():
     # Mortgage
     inputs['time'] = 15 # number of years for mortgage
     inputs['interest'] = .03 # APY interest rate
-    inputs['price'] = 275000 # dollars
+    inputs['initial_value'] = 275000 # dollars
+    inputs['offer'] = 275000
     inputs['down_payment'] = .2 # percent/100
     inputs['yearly_house_appreciation'] = .02 # percent appreciation of house value
 
@@ -49,7 +50,8 @@ def calculate_cost(inputs):
 
     time = inputs['time']
     interest = inputs['interest']
-    price = inputs['price']
+    price = inputs['initial_value']
+    offer = inputs['offer']
     down_payment = inputs['down_payment']
     yearly_house_appreciation = inputs['yearly_house_appreciation']
 
@@ -81,7 +83,7 @@ def calculate_cost(inputs):
 
     # For calculations: do not edit
     n = time * 12 #number of months for the loan
-    L = price * (1.0 - down_payment) # loan amount
+    L = offer * (1.0 - down_payment) # loan amount
     monthly_interest = interest/12.0 # monthly interest rate as a percent/100
     p = calculate_montly_payment(n,L,monthly_interest) # monthly payment
 
@@ -105,7 +107,7 @@ def calculate_cost(inputs):
     mortgage['Year'] = np.ceil(mortgage['Month']/12.0)
     mortgage['Cumulative_Equity_Gain'] = mortgage['Equity_Gain'].cumsum()
     mortgage['Cumulative_Interest_Paid'] = mortgage['Interest_Paid'].cumsum()
-    mortgage['Total_Equity_With_Appreciation'] = (mortgage['Cumulative_Equity_Gain'] + down_payment * price) * (1 + yearly_house_appreciation)**mortgage['Year']
+    mortgage['Total_Equity_With_Appreciation'] = (mortgage['Cumulative_Equity_Gain']*(price/offer) + down_payment * price) * (1 + yearly_house_appreciation)**mortgage['Year']
     mortgage.set_index([range(len(mortgage))], inplace = True)
 
 
@@ -136,7 +138,7 @@ def calculate_cost(inputs):
     yearly_mortgage['Cumulative_Homeowner_Insurance'] = yearly_mortgage['Homeowner_Insurance'].cumsum()
     yearly_mortgage['Maintenance'] = yearly_maintenance * yearly_mortgage['House_Value']
     yearly_mortgage['Cumulative_Maintenance'] = yearly_mortgage['Maintenance'].cumsum()
-    yearly_mortgage['Total_Cost'] = yearly_mortgage['Cumulative_Property_Tax'] + yearly_mortgage['Cumulative_Interest_Paid']+ yearly_mortgage['Cumulative_HOA']+ yearly_mortgage['Cumulative_Homeowner_Insurance']+ yearly_mortgage['Cumulative_Maintenance']+ price * closing_buy+ yearly_mortgage['House_Value'] * closing_sell
+    yearly_mortgage['Total_Cost'] = yearly_mortgage['Cumulative_Property_Tax'] + yearly_mortgage['Cumulative_Interest_Paid']+ yearly_mortgage['Cumulative_HOA']+ yearly_mortgage['Cumulative_Homeowner_Insurance']+ yearly_mortgage['Cumulative_Maintenance'] + offer * closing_buy + yearly_mortgage['House_Value'] * closing_sell
 
     # Rental income
     yearly_mortgage['Rent_Income'] = ((1-marginal_tax_rate) * (1 - percent_vacancy) * 12 * monthly_rent * rent_percent ) * ((1 + rent_yearly_increase) ** yearly_mortgage['Year'])
