@@ -5,11 +5,11 @@ import numpy as np
 def calculate_inputs():
     inputs = {}
     # Mortgage
-    inputs['time'] = 15 # number of years for mortgage
-    inputs['interest'] = .03 # APY interest rate
-    inputs['initial_value'] = 275000 # dollars
-    inputs['offer'] = 275000
-    inputs['down_payment'] = .2 # percent/100
+    inputs['time'] = int(input("Lengh of Mortgage (Years): ")) # number of years for mortgages
+    inputs['interest'] = input('Interest Rate (APY 0-100): ')/100.0 # APY interest rate
+    inputs['down_payment'] = input('Down Payment (0-100): ')/100.0
+    inputs['offer'] = input('Offer ($1000): ') * 1000.0
+    inputs['initial_value'] = input('House Value ($1000): ') * 1000.0
     inputs['yearly_house_appreciation'] = .02 # percent appreciation of house value
 
     # Taxes
@@ -21,18 +21,18 @@ def calculate_inputs():
 
     # Extra Costs
     inputs['yearly_maintenance'] = .003 # percent of house value set aside yearly for repairs and maintenance
-    inputs['hoa_fee'] = 310 # montly hoa fee
+    inputs['hoa_fee'] = input('Monthly HOA Fee ($): ') # montly hoa fee
     inputs['hoa_yearly_increase'] = .01 # yearly percent increase in hoa fee
-    inputs['homeowner_insurance'] = 60 # monthly payment for insurance
+    inputs['homeowner_insurance'] = input('Monthly Insurance ($): ') # monthly payment for insurance
     inputs['homeowner_yearly_increase'] = .01 # yearly percent increase in insurance
-    inputs['closing_buy'] = .04 # percent of house value for closing cost when buying
-    inputs['closing_sell'] = .04 # percent of house value for closing cost when selling
+    inputs['closing_buy'] = .06 # percent of house value for closing cost when buying
+    inputs['closing_sell'] = .06 # percent of house value for closing cost when selling
 
     #Rental Income
-    inputs['monthly_rent']= 1725 # expected monthly rent for current year
+    inputs['monthly_rent']= input('Monthly Rent ($): ') # expected monthly rent for current year
     inputs['rent_yearly_increase'] = .01 # yearly percent increase in rent
     inputs['percent_vacancy'] = 1.0/12.0 # percent of the year with vacancy
-    inputs['rent_percent'] = 0.6 #percent of monthly rent as income, 0 means not renting, 1 means rental property
+    inputs['rent_percent'] = input('Pecent Rent Income (0-100): ')/100.0 #percent of monthly rent as income, 0 means not renting, 1 means rental property
 
     # Oportunity costs
     inputs['investment_return'] = .06 #average yearly return
@@ -150,7 +150,7 @@ def calculate_cost(inputs):
 
 
 
-    yearly_mortgage['Initial_Opportunity'] = ((down_payment+closing_buy)*price) * (1 + investment_return)**(yearly_mortgage['Year']) * (1-long_term_capital_gains) # investing the downpayment and the closing cost of buying
+    yearly_mortgage['Initial_Opportunity'] = ((down_payment+closing_buy)*offer) * (1 + investment_return)**(yearly_mortgage['Year']) * (1-long_term_capital_gains) # investing the downpayment and the closing cost of buying
     yearly_mortgage['Yearly_Rent_Cost'] = 12 * opportunity_rent * ((1 + rent_yearly_increase) ** yearly_mortgage['Year']) # The cost of renting
 
     # Leftover money to invest if you choose to rent instead of buy, can be negative which means renting has opportunity cost
