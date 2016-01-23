@@ -37,6 +37,7 @@ def calculate_inputs():
     # Oportunity costs
     inputs['investment_return'] = .06 #average yearly return
     inputs['opportunity_rent'] = inputs['monthly_rent'] * (1 - inputs['rent_percent']) # amount you would pay to rent instead
+    print inputs
     return (inputs)
 
 def calculate_montly_payment(n,L,monthly_interest):
