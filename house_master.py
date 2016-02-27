@@ -1,69 +1,28 @@
 
 import pandas as pd
 import numpy as np
-import urllib2
-import json
-import xmltodict
 
 class House():
 
     # Static Class Variables
-    yearly_house_appreciation = .02
-    marginal_tax_rate = .25 
-    expected_deduction = 6400 # expected standard deduction for current year
-    expected_deduction_yearly_increase = 100 # expected increase in standard deduction each year
-    property_tax = .01 # percent of house value payed as yearly property tax
-    long_term_capital_gains = .15
-    yearly_maintenance = .003 # percent of house value set aside yearly for repairs and maintenance
-    hoa_yearly_increase = .01 # yearly percent increase in hoa fee
-    homeowner_yearly_increase = .01 # yearly percent increase in insurance
-    closing_buy = .06 # percent of house value for closing cost when buying
-    closing_sell = .06 # percent of house value for closing cost when selling
-    rent_yearly_increase= .01 # yearly percent increase in rent
-    percent_vacancy = 1.0/12.0 # percent of the year with vacancy
-    investment_return = .07 #average yearly return
+    #yearly_house_appreciation = .02
+    #marginal_tax_rate = .25 
+    #expected_deduction = 6400 # expected standard deduction for current year
+    #expected_deduction_yearly_increase = 100 # expected increase in standard deduction each year
+    #property_tax = .01 # percent of house value payed as yearly property tax
+    #long_term_capital_gains = .15
+    #yearly_maintenance = .003 # percent of house value set aside yearly for repairs and maintenance
+    #hoa_yearly_increase = .01 # yearly percent increase in hoa fee
+    #homeowner_yearly_increase = .01 # yearly percent increase in insurance
+    #closing_buy = .06 # percent of house value for closing cost when buying
+    #closing_sell = .06 # percent of house value for closing cost when selling
+    #rent_yearly_increase= .01 # yearly percent increase in rent
+    #percent_vacancy = 1.0/12.0 # percent of the year with vacancy
+    #investment_return = .07 #average yearly return
 
-    def __init__(self, address, zillow_flag = True):
-        self.address = address
-        self.zillow_flag = zillow_flag
-
-    def calculate_inputs(self):
-        inputs = {}
-        # Mortgage
-        inputs['time'] = int(input("Lengh of Mortgage (Years): ")) # number of years for mortgages
-        inputs['interest'] = input('Interest Rate (APY 0-100): ')/100.0 # APY interest rate
-        inputs['down_payment'] = input('Down Payment (0-100): ')/100.0
-        inputs['offer'] = input('Offer ($1000): ') * 1000.0
-        inputs['initial_value'] = input('House Value ($1000): ') * 1000.0
-        inputs['yearly_house_appreciation'] = House.yearly_house_appreciation # percent appreciation of house value
-
-        # Taxes
-        inputs['marginal_tax_rate'] = House.marginal_tax_rate 
-        inputs['expected_deduction'] = House.expected_deduction # expected standard deduction for current year
-        inputs['expected_deduction_yearly_increase'] = House.expected_deduction_yearly_increase # expected increase in standard deduction each year
-        inputs['property_tax'] = House.property_tax # percent of house value payed as yearly property tax
-        inputs['long_term_capital_gains'] = House.long_term_capital_gains
-
-        # Extra Costs
-        inputs['yearly_maintenance'] = House.yearly_maintenance # percent of house value set aside yearly for repairs and maintenance
-        inputs['hoa_fee'] = input('Monthly HOA Fee ($): ') # montly hoa fee
-        inputs['hoa_yearly_increase'] = House.homeowner_yearly_increase # yearly percent increase in hoa fee
-        inputs['homeowner_insurance'] = input('Monthly Insurance ($): ') # monthly payment for insurance
-        inputs['homeowner_yearly_increase'] = House.homeowner_yearly_increase # yearly percent increase in insurance
-        inputs['closing_buy'] = House.closing_buy # percent of house value for closing cost when buying
-        inputs['closing_sell'] = House.closing_sell # percent of house value for closing cost when selling
-
-        #Rental Income
-        inputs['monthly_rent']= input('Monthly Rent ($): ') # expected monthly rent for current year
-        inputs['rent_yearly_increase'] = House.rent_yearly_increase # yearly percent increase in rent
-        inputs['percent_vacancy'] = House.percent_vacancy # percent of the year with vacancy
-        inputs['rent_percent'] = input('Pecent Rent Income (0-100): ')/100.0 #percent of monthly rent as income, 0 means not renting, 1 means rental property
-
-        # Oportunity costs
-        inputs['investment_return'] = House.investment_return #average yearly return
-        inputs['opportunity_rent'] = inputs['monthly_rent'] * (1 - inputs['rent_percent']) # amount you would pay to rent instead
-
+    def __init__(self, inputs):
         self.inputs = inputs
+
     
     def calculate_montly_payment(self,n,L,monthly_interest):
         I = monthly_interest
@@ -174,7 +133,7 @@ class House():
         yearly_mortgage['House_Net_Value'] = yearly_mortgage['Total_Equity_With_Appreciation'] - yearly_mortgage['Effective_Cost']
 
 
-
+        # Opportunity Costs
         yearly_mortgage['Initial_Opportunity'] = ((down_payment+closing_buy)*offer) * (1 + investment_return)**(yearly_mortgage['Year']) * (1-long_term_capital_gains) # investing the downpayment and the closing cost of buying
         yearly_mortgage['Yearly_Rent_Cost'] = 12 * opportunity_rent * ((1 + rent_yearly_increase) ** yearly_mortgage['Year']) # The cost of renting
 
